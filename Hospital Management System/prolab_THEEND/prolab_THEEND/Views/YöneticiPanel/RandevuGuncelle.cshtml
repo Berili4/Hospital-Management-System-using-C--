@@ -1,0 +1,63 @@
+﻿@using prolab_THEEND.Models
+@model CombinedModels
+@{
+    ViewBag.Title = "Randevu Guncelle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    CombinedModels models = Session["YöneticiLogin"] as CombinedModels;
+    Randevu randevu = prolab_THEEND.Controllers.HomeController.randevuModifier.FindRandevu(Convert.ToInt32(Session["RandevuId"]));
+
+    foreach (Randevu findRandevu in prolab_THEEND.Controllers.HomeController.randevuModifier.RandevuDatabase)
+    {
+        if (findRandevu.RandevuId == randevu.RandevuId)
+        {
+            randevu = findRandevu;
+        }
+    }
+
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <br />
+            <h2>Hasta Güncelle</h2>
+            @using (Html.BeginForm())
+            {
+                <div class="form-group">
+                    <strong>Hasta Bilgileri</strong>
+                    @Html.TextBoxFor(x => x.Hasta.Ad, new { @class = "form-control", @readonly = "readonly", Value = $"{randevu.Hasta.Ad}" })
+                    @Html.TextBoxFor(x => x.Hasta.SoyAd, new { @class = "form-control", @readonly = "readonly", Value = $"{randevu.Hasta.SoyAd}" })
+                </div>
+
+                <div class="form-group">
+                    <strong>Doktor Bilgileri</strong>
+                    @Html.TextBoxFor(x => x.Doktor.Ad, new { @class = "form-control", @readonly = "readonly", Value = $"{randevu.Doktor.Ad}" })
+                    @Html.TextBoxFor(x => x.Doktor.SoyAd, new { @class = "form-control", @readonly = "readonly", Value = $"{randevu.Doktor.SoyAd}" })
+
+                </div>
+
+                <div class="form-group">
+                    <input type="datetime-local" id="randevuTarihi" name="RandevuTarih" value="@randevu.RandevuTarih.ToString("yyyy-MM-ddTHH:mm")" class="form-contol mb-3" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+
+            }
+            @{
+                string mesaj = TempData["GuncellemeMesaj"] as string;
+                string durum = TempData["GuncellemeMesaj_Durum"] as string;
+                string h2Class = "";
+                if (durum == "Onay")
+                {
+                    h2Class = "text-primary";
+                }
+                else if (durum == "Red")
+                {
+                    h2Class = "text-danger";
+                }
+                <h2 class=@h2Class>@mesaj</h2>
+            }
+        </div>
+    </div>
+</div>

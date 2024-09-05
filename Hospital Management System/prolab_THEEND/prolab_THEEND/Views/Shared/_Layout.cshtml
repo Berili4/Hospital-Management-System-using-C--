@@ -1,0 +1,220 @@
+﻿@using prolab_THEEND.Models
+@model CombinedModels
+<!-- Bootstrap CSS -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <style>
+        /* Özel CSS stil tanımları */
+        .navbar-header button {
+            margin-left: 200px; /* Butonların sağ kenarına 10px boşluk ekler */
+            color: #fff; /* Buton metin rengini beyaz yapar */
+        }
+
+            .navbar-header button:hover {
+                background-color: #007bff; /* Butonun hover durumunda mavi arka plan rengi */
+            }
+
+        .notification-button {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            color: white;
+            border-radius: 5px;
+            background-color: #007bff;
+            margin-right: 10px;
+        }
+
+        .notification-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: darkslategray;
+            color: white;
+            border-radius: 50%;
+            padding: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            min-width: 20px;
+            text-align: center;
+        }
+        .notification-panel {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px); /* Düğme altı + 10px boşluk */
+            right: 400px; /* Sağa hizala */
+            width: 200px;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            z-index: 1; /* Panelin diğer içeriklerin üstünde olmasını sağlar */
+        }
+    </style>
+    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+    <script src="https://kit.fontawesome.com/5fea1ddede.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">Hastane Sayfası</a>
+            @{ if (Session["DoktorLogin"] != null)
+                {
+                    CombinedModels kullanıcı = Session["DoktorLogin"] as CombinedModels;
+
+                    <div class="navbar-header">
+                        @* Ayarlanacak hasta listesinden gelmeli*@
+                        @Html.ActionLink("Hastaları Görüntüle", "HastaGoruntule", "DoktorPanel", new { id = EncryptionHelper.EncryptString(kullanıcı.Doktor.DoktorID + kullanıcı.Doktor.Ad,"doktoradsoyad") }, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Tıbbi Rapor Paneli", "TibbiRaporGoruntuleDoc", "DoktorPanel", new { sayfaNumarasi = 0 }, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Çıkış Yap", "LogOut", "Home", new { id = 123 }, new { @class = "btn btn-primary" })
+                    </div>
+
+                    <h2>@kullanıcı.Doktor.Ad Abi Hoşgeldiniz!</h2>
+                }
+                else if (Session["HastaLogin"] != null)
+                {
+                    CombinedModels kullanıcı = Session["HastaLogin"] as CombinedModels;
+
+
+                <div class="navbar-header">
+                
+                    <button class="notification-button" onclick="toggleNotificationPanel()">
+                        <i class="fas fa-bell"></i> <!-- Çan ikonu için Font Awesome kullanımı -->
+
+                        @if (kullanıcı.Hasta.BildirimSayısı > 0)
+                        {
+                            <span class="notification-count">
+
+                                <i class="fa-solid fa-exclamation" style="color: #ff0000;"></i>
+
+                            </span> <!-- Bildirim sayısı -->
+                        }
+                    </button>
+                
+                <!-- Bildirim Paneli -->
+                <div class="notification-panel" id="notificationPanel">
+                    <p id="notificationMessage"></p>
+                </div>
+                @Html.ActionLink("Randevu Paneli", "RandevuPanel", "HastaPanel", new { id = EncryptionHelper.EncryptString(kullanıcı.Hasta.TcKimlikNo + kullanıcı.Hasta.HastaId,"tc") }, new { @class = "btn btn-primary" })
+                @Html.ActionLink("Tıbbi Rapor Paneli", "TibbiRaporGoruntuleHas", "HastaPanel", new { id = EncryptionHelper.EncryptString(kullanıcı.Hasta.TcKimlikNo + kullanıcı.Hasta.HastaId, "tc") }, new { @class = "btn btn-primary" })
+                @Html.ActionLink("Çıkış Yap", "LogOut", "Home", new { id = 123 }, new { @class = "btn btn-primary" })
+            </div>
+
+                }
+                else if (Session["YöneticiLogin"] != null)
+                {
+                    CombinedModels kullanıcı = Session["YöneticiLogin"] as CombinedModels;
+
+                    <div class="navbar-header">
+                        <h2>@kullanıcı.Yönetici.Ad Hoşgeldiniz!</h2>
+                    </div>
+
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="raporDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Randevu İşlemleri
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="hastaDropdown">
+                            @Html.ActionLink("Randevu Paneli", "RandevuPanel", "YöneticiPanel", new { sayfaNumarasi = 0 }, new { @class = "dropdown-item" })
+
+                        </div>
+                    </div>
+
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="hastaDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Hasta İşlemleri
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="hastaDropdown">
+                            @Html.ActionLink("Hasta Listele", "HastaListele", "YöneticiPanel", new { sayfaNumarasi = 0 }, new { @class = "dropdown-item" })
+                            @Html.ActionLink("Hasta Ekle", "HastaEkle", "YöneticiPanel", new { id = 123 }, new { @class = "dropdown-item" })
+                            @Html.ActionLink("Hasta Sil", "HastaSil", "YöneticiPanel", new { id = 123 }, new { @class = "dropdown-item" })
+
+                        </div>
+                    </div>
+
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="doktorDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Doktor İşlemleri
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="doktorDropdown">
+                            @Html.ActionLink("Doktor Listele", "DoktorListele", "YöneticiPanel", new { sayfaNumarasi = 0 }, new { @class = "dropdown-item" })
+                            @Html.ActionLink("Doktor Ekle", "DoktorEkle", "YöneticiPanel", new { id = 123 }, new { @class = "dropdown-item" })
+                            @Html.ActionLink("Doktor Sil", "DoktorSil", "YöneticiPanel", new { id = 123 }, new { @class = "dropdown-item" })
+                        </div>
+                    </div>
+
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="raporDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Tıbbi Rapor İşlemleri
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="raporDropdown">
+                            @Html.ActionLink("Laboratuvar Sonuçları", "LabSonuc", "YöneticiPanel", new { sayfaNumarasi = 0 }, new { @class = "dropdown-item" })
+                            @Html.ActionLink("Tıbbi Rapor Ekle", "TıbbiRaporEkle", "YöneticiPanel", new { id = 123 }, new { @class = "dropdown-item" })
+                            @Html.ActionLink("Tıbbi Rapor Sil", "LabSonucSil", "YöneticiPanel", new { id = 123 }, new { @class = "dropdown-item" })
+                        </div>
+                    </div>
+
+                    @Html.ActionLink("Çıkış Yap", "LogOut", "Home", new { id = 123 }, new { @class = "btn btn-primary" })
+                }
+                else
+                {
+                    <div class="navbar-header">
+                        @Html.ActionLink("Yönetici Girişi", "YoneticiLogin", "Home", new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Hasta Girişi", "HastaLogin", "Home", new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Doktor Girişi", "DoktorLogin", "Home", new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                    </div>
+                }
+            }
+        </div>
+    </nav>
+
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+
+</body>
+</html>
+<script>
+    // Sunucu tarafından gelen veriyi JavaScript değişkenine aktar
+    var notificationCount = @((Session["HastaLogin"] as CombinedModels)?.Hasta.BildirimSayısı ?? 0);
+
+    // JavaScript fonksiyonunu düzgün şekilde tanımla
+    function toggleNotificationPanel() {
+        var panel = document.getElementById("notificationPanel");
+        var message = "Yeni bildirim: Tıbbi rapor sonucunuz açıklandı! Lütfen kontrol ediniz."; // Gösterilecek mesaj
+
+        if (notificationCount > 0) {
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+            } else {
+                panel.style.display = "block";
+                document.getElementById("notificationMessage").textContent = message;
+            }
+        }
+    }
+</script>

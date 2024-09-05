@@ -1,0 +1,61 @@
+﻿@model prolab_THEEND.Models.CombinedModels
+@{
+    ViewBag.Title = "TıbbiRaporEkle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <br />
+            <h2>Tıbbi Rapor Ekle</h2>
+            <br />
+            @using (Html.BeginForm("TıbbiRaporEkle", "YöneticiPanel", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Rapor.Hasta.TcKimlikNo, new { @class = "form-control", placeholder = "Hasta Tc" })
+                    @Html.ValidationMessageFor(m => m.Rapor.Hasta.TcKimlikNo, "", new { @class = "text-danger" })
+
+                </div>
+                <div class="form-group">
+                    <strong>İşlemin id'sini giriniz.</strong>
+                    @Html.TextBoxFor(x => x.Rapor.Islem.IslemId, new { @class = "form-control", placeholder = "Işlem Id" })
+                    @Html.ValidationMessageFor(m => m.Rapor.Islem.IslemId, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Rapor.İçerik, new { @class = "form-control", placeholder = "İçerik" })
+                    @Html.ValidationMessageFor(m => m.Rapor.İçerik, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    <label for="randevuTarihi">Sonuç Tarihi</label>
+                    @{
+                        DateTime bugun = DateTime.Now;
+                        string bugununTarihi = bugun.ToString("yyyy-MM-ddTHH:mm");
+                    }
+                    <input type="datetime-local" id="randevuTarihi" name="SonucTarih" class="form-control mb-3"
+                           value="@bugununTarihi" readonly="readonly">
+                </div>
+                <div class="form-group">
+                    <input type="file" name="fileUpload" id="fileUpload" accept=".jpg, .png" />
+                </div>
+                <button type="submit" id="showPopupBtn" class="btn btn-primary">Kaydet</button>
+            }
+            @{
+                string mesaj = TempData["GuncellemeMesaj"] as string;
+                string durum = TempData["GuncellemeMesaj_Durum"] as string;
+                string h2Class = "";
+                if (durum == "Onay")
+                {
+                    h2Class = "text-primary";
+                }
+                else if (durum == "Red")
+                {
+                    h2Class = "text-danger";
+                }
+                <h2 class=@h2Class>@mesaj</h2>
+            }
+        </div>
+    </div>
+</div>
+
+

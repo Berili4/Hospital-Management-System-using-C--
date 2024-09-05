@@ -1,0 +1,88 @@
+﻿@using prolab_THEEND.Models
+@{
+    ViewBag.Title = "TibbiRaporGoruntuleDoc";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>TibbiRaporGoruntuleDoc</h2>
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+<h2>LabSonuc</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Rapor Id</th>
+            <th>Hasta Ad</th>
+            <th>İçerik</th>
+            <th>Tarih</th>
+            <th>Görsel</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int doktorId = (Session["DoktorLogin"] as CombinedModels).Doktor.DoktorID;
+
+            List<prolab_THEEND.Models.Rapor> raporList = prolab_THEEND.Controllers.HomeController.raporModifier.FindRaporWithDoktorId(doktorId);
+
+            foreach (var rapor in raporList)
+            {
+                using (Html.BeginForm())
+                {
+                    <tr>
+                        <td>@rapor.RaporID</td>
+                        <td>@rapor.Hasta.Ad</td>
+                        <td>@rapor.İçerik</td>
+                        <td>
+                            @rapor.Tarih
+                        </td>
+                        <td><a href="@rapor.URL">GORSEL</a></td>
+                        <td>
+                            <div style="margin-top: 5px;">
+                                <!-- Adding margin for spacing -->
+                                @Html.Hidden("LabId", rapor.RaporID)
+                                <button type="submit" class="btn btn-warning">Güncelle</button>
+                                <button class="btn btn-primary btnIndir" data-url="@rapor.URL">Dosyayı İndir</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.btnIndir').click(function (e) {
+            e.preventDefault();
+            var url = $(this).data('url');
+
+            $.ajax({
+                url: '@Url.Action("DosyaIndir", "DoktorPanel")',
+                type: 'POST',
+                data: { url: url },
+                success: function (result) {
+                    alert('Dosya başarılı bir şekilde indirildi');
+                },
+                error: function () {
+                    alert('Dosya indirme sırasında bir hata oluştu');
+                }
+            });
+        });
+    });
+</script>

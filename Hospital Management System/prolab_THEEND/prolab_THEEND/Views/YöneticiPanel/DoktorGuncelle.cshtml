@@ -1,0 +1,74 @@
+﻿@using prolab_THEEND.Models
+@model CombinedModels
+@{
+    ViewBag.Title = "DoktorGuncelle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br/>
+<h2>DoktorGuncelle</h2>
+@{ 
+    CombinedModels models = Session["YöneticiLogin"] as CombinedModels;
+    Doktor doktor = prolab_THEEND.Controllers.HomeController.doktorModifier.FindDoctorById(Convert.ToInt32(Session["DoktorId"]));
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <br />
+            <h2>Hasta Güncelle</h2>
+            @using (Html.BeginForm())
+            {
+                <h1>Şuan @doktor.Ad 'ı güncellemek üzeresiniz.</h1>
+
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Doktor.DoktorID, new { @class = "form-control", @readonly = "readonly", Value = $"{doktor.DoktorID}" })
+                </div>
+
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Doktor.Ad, new { @class = "form-control", placeholder = "Ad", Value = $"{doktor.Ad}" })
+
+                    @Html.ValidationMessageFor(m => m.Doktor.Ad, "", new { @class = "text-danger" })
+
+                </div>
+
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Doktor.SoyAd, new { @class = "form-control", placeholder = "Soy Ad", Value = $"{doktor.SoyAd}" })
+                    @Html.ValidationMessageFor(m => m.Doktor.SoyAd, "", new { @class = "text-danger" })
+
+                </div>
+
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Doktor.Hastane, new { @class = "form-control", placeholder = "Hastane", Value = $"{doktor.Hastane}" })
+                    @Html.ValidationMessageFor(m => m.Doktor.Hastane, "", new { @class = "text-danger" })
+
+                </div>
+
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Doktor.UzmanlıkAlanı, new { @class = "form-control", placeholder = "Uzmanlık Alanı", Value = $"{doktor.UzmanlıkAlanı}" })
+                    @Html.ValidationMessageFor(m => m.Doktor.UzmanlıkAlanı, "", new { @class = "text-danger" })
+
+                </div>
+
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Doktor.Şifre, new { @class = "form-control", placeholder = "Şifre", Value = $"{doktor.Şifre}" })
+                    @Html.ValidationMessageFor(m => m.Doktor.Şifre, "", new { @class = "text-danger" })
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+
+                </div>
+            }
+            @{
+                string mesaj = TempData["GuncellemeMesaj"] as string;
+                string durum = TempData["GuncellemeMesaj_Durum"] as string;
+                string h2Class = "";
+                if (durum == "Onay")
+                {
+                    h2Class = "text-primary";
+                }
+                else if (durum == "Red")
+                {
+                    h2Class = "text-danger";
+                }
+                <h2 class=@h2Class>@mesaj</h2>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,86 @@
+﻿@model prolab_THEEND.Models.CombinedModels
+@{
+    ViewBag.Title = "HastaEkle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Scripts/popup.css" rel="stylesheet" />
+<br />
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Hasta Ekle</h2>
+            @using (Html.BeginForm())
+            {
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Hasta.Ad, new { @class = "form-control", placeholder = "Ad" })
+                    @Html.ValidationMessageFor(m => m.Hasta.Ad, "", new { @class = "text-danger" })
+
+                </div>
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Hasta.SoyAd, new { @class = "form-control", placeholder = "Soy Ad" })
+                    @Html.ValidationMessageFor(m => m.Hasta.SoyAd, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Hasta.Cinsiyet, new { @class = "form-control", placeholder = "Cinsiyet" })
+                    @Html.ValidationMessageFor(m => m.Hasta.Cinsiyet, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Hasta.TelefonNo, new { @class = "form-control", placeholder = "Telefon No" })
+                    @Html.ValidationMessageFor(m => m.Hasta.TelefonNo, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Hasta.Adres, new { @class = "form-control", placeholder = "Adres" })
+                    @Html.ValidationMessageFor(m => m.Hasta.Adres, "", new { @class = "text-danger" })
+
+                </div>
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Hasta.TcKimlikNo, new { @class = "form-control", placeholder = "Tc No" })
+                    @Html.ValidationMessageFor(m => m.Hasta.TcKimlikNo, "", new { @class = "text-danger" })
+
+                </div>
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Hasta.Şifre, new { @class = "form-control", placeholder = "Şifre" })
+                    @Html.ValidationMessageFor(m => m.Hasta.Şifre, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    <label for="randevuTarihi">Doğum Tarihi</label>
+                    @{
+                        DateTime bugun = DateTime.Now;
+                        string bugununTarihi = bugun.ToString("yyyy-MM-ddTHH:mm");
+                    }
+                    <input type="datetime-local" id="randevuTarihi" name="DogumTarihi" class="form-control mb-3"
+                           value="@bugununTarihi">
+                    @Html.ValidationMessageFor(m => m.Hasta.DogumTarihi, "", new { @class = "text-danger" })
+                </div>
+                <button type="submit" id="showPopupBtn" class="btn btn-primary">Kaydet</button>
+            }
+            @{
+                string mesaj = TempData["GuncellemeMesaj"] as string;
+                string durum = TempData["GuncellemeMesaj_Durum"] as string;
+                string h2Class = "";
+                if (durum == "Onay")
+                {
+                    h2Class = "text-primary";
+                }
+                else if (durum == "Red")
+                {
+                    h2Class = "text-danger";
+                }
+                <h2 class=@h2Class>@mesaj</h2>
+            }
+        </div>
+        <div class="col-md-6">
+            <h2>Hasta Listesi</h2>
+            <ul class="list-group">
+                @{
+                    List<prolab_THEEND.Models.Hasta> hastaList = prolab_THEEND.Controllers.HomeController.hastaModifier.HastaDatabase;
+                    foreach (var hasta in hastaList)
+                    {
+                        <li class="list-group-item">@hasta.Ad</li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+</div>

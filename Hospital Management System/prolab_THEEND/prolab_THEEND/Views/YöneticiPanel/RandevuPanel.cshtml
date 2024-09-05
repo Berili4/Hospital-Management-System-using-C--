@@ -1,0 +1,68 @@
+﻿@using prolab_THEEND.Models
+@{
+    ViewBag.Title = "RandevuPanel";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    List<Randevu> randevular = Session["TempList"] as List<prolab_THEEND.Models.Randevu>;
+}
+<Br />
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+
+<h2>Randevu Listesi</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Doktor</th>
+            <th>Hasta</th>
+            <th>Randevu Vakti</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            foreach (var randevu in randevular)
+            {
+                using (Html.BeginForm())
+                {
+                    <tr>
+                        <td>@randevu.Doktor.Ad</td>
+                        <td>@randevu.Hasta.Ad</td>
+                        <td>@randevu.RandevuTarih</td>
+                        <td>
+                            <div style="margin-top: 5px;">
+                                @Html.Hidden("RandevuId", randevu.RandevuId)
+                                <button type="submit" class="btn btn-warning">Güncelle</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+@if (ViewBag.ToplamHastaSayisi > 10)
+{
+    <div style="margin-top: 10px;">
+        Sayfalar:
+        @for (int i = 0, k = i + 1; i <= Math.Floor((decimal)ViewBag.ToplamHastaSayisi / 10); i++)
+        {
+            <a href="@Url.Action("RandevuPanel", "YöneticiPanel", new { sayfaNumarasi = i })">@i </a>
+        }
+    </div>
+}

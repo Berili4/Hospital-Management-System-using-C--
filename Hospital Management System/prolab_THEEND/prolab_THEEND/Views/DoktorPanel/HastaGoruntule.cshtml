@@ -1,0 +1,56 @@
+﻿@model prolab_THEEND.Models.CombinedModels
+@{
+    ViewBag.Title = "HastaGoruntule";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<Br />
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+
+<h2>Kayıtlı Hastalarınızın Listesi</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Ad</th>
+            <th>Soyad</th>
+            <th>Doğum Tarihi</th>
+            <th>Cinsiyet</th>
+            <th>Telefon Numarası</th>
+            <th>Adres</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            prolab_THEEND.Models.CombinedModels model = Session["DoktorLogin"] as prolab_THEEND.Models.CombinedModels;
+            List<prolab_THEEND.Models.Hasta> hastaList = model.Doktor.HastaList;
+            foreach (var hasta in hastaList)
+            {
+                <tr>
+                    <td>@hasta.Ad</td>
+                    <td>@hasta.SoyAd</td>
+                    <td>@hasta.DogumTarihi.ToString()</td>
+                    <td>@hasta.Cinsiyet</td>
+                    <td>@hasta.TelefonNo</td>
+                    <td>@hasta.Adres</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+

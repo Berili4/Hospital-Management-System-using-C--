@@ -1,0 +1,82 @@
+﻿@model prolab_THEEND.Models.CombinedModels
+@{
+    ViewBag.Title = "HastaGüncelle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+@{ 
+    string HastaTc = Session["HastaTcTemp"] as string; ; @*Parametre adıyla aynı olmak zorunda*@
+prolab_THEEND.Models.Hasta hasta = prolab_THEEND.Controllers.HomeController.hastaModifier.FindHastaWithTC(HastaTc);
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <br />
+            <h2>Hasta Güncelle</h2>
+            @using (Html.BeginForm())
+            {
+                <h1>Şuan @hasta.Ad 'ı güncellemek üzeresiniz.</h1>
+
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Hasta.HastaId, new { @class = "form-control", @readonly = "readonly", Value = $"{hasta.HastaId}" })
+                </div>
+
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Hasta.Ad, new { @class = "form-control", placeholder = "Ad", Value = $"{hasta.Ad}" })
+                    @Html.ValidationMessageFor(m => m.Hasta.Ad, "", new { @class = "text-danger" })
+
+                </div>
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Hasta.SoyAd, new { @class = "form-control", placeholder = "Soy Ad", Value = $"{hasta.SoyAd}" })
+                    @Html.ValidationMessageFor(m => m.Hasta.SoyAd, "", new { @class = "text-danger" })
+
+                </div>
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Hasta.Cinsiyet, new { @class = "form-control", placeholder = "Cinsiyet", Value = $"{hasta.Cinsiyet}" })
+                    @Html.ValidationMessageFor(m => m.Hasta.Cinsiyet, "", new { @class = "text-danger" })
+
+                </div>
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Hasta.TelefonNo, new { @class = "form-control", placeholder = "Telefon No", Value = $"{hasta.TelefonNo}" })
+                    @Html.ValidationMessageFor(m => m.Hasta.TelefonNo, "", new { @class = "text-danger" })
+
+                </div>
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Hasta.Adres, new { @class = "form-control", placeholder = "Adres", Value = $"{hasta.Adres}" })
+                    @Html.ValidationMessageFor(m => m.Hasta.Adres, "", new { @class = "text-danger" })
+
+                </div>
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Hasta.TcKimlikNo, new { @class = "form-control", placeholder = "Tc No", Value = $"{hasta.TcKimlikNo}" })
+                    @Html.ValidationMessageFor(m => m.Hasta.TcKimlikNo, "", new { @class = "text-danger" })
+
+                </div>
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Hasta.Şifre, new { @class = "form-control", placeholder = "Şifre", Value = $"{hasta.Şifre}" })
+                    @Html.ValidationMessageFor(m => m.Hasta.Şifre, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    <input type="datetime-local" id="randevuTarihi" name="DogumTarihi" value="@hasta.DogumTarihi.ToString("yyyy-MM-ddTHH:mm")" class="form-contol mb-3" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+            }
+            @{
+                string mesaj = TempData["GuncellemeMesaj"] as string;
+                string durum = TempData["GuncellemeMesaj_Durum"] as string;
+                string h2Class = "";
+                if (durum == "Onay")
+                {
+                    h2Class = "text-primary";
+                }
+                else if (durum == "Red")
+                {
+                    h2Class = "text-danger";
+                }
+                <h2 class=@h2Class>@mesaj</h2>
+            }
+        </div>
+        
+    </div>
+</div>

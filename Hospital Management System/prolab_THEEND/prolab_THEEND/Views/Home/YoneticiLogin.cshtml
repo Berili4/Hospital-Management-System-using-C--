@@ -1,0 +1,38 @@
+﻿@model prolab_THEEND.Models.CombinedModels
+@{
+    ViewBag.Title = "DoktorLogin";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<br />
+<br />
+<br />
+<br />
+
+
+<head>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center"><i class="fas fa-user-circle"></i> Yönetici Girişi</h3>
+                    </div>
+                    <div class="card-body">
+                        @using (Html.BeginForm())
+                        {
+                            @Html.TextBoxFor(x => x.Yönetici.Ad, new { @class = "form-control mb-3", placeholder = "Kullanıcı Adı" })
+                            @Html.ValidationMessageFor(m => m.Yönetici.Ad, "", new { @class = "text-danger" })
+
+                            @Html.TextBoxFor(x => x.Yönetici.Şifre, new { @class = "form-control mb-3", placeholder = "Şifre", type = "password" })
+                            @Html.ValidationMessageFor(m => m.Yönetici.Şifre, "", new { @class = "text-danger" })
+
+                            <button type="submit"  id="showPopupBtn" class="btn btn-primary btn-block">Giriş Yap</button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</head>

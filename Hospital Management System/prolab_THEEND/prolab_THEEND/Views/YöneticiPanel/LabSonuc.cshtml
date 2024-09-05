@@ -1,0 +1,99 @@
+﻿
+@{
+    ViewBag.Title = "LabSonuc";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+<br/>
+<h2>LabSonuc</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Rapor Id</th>
+            <th>Hasta Ad</th>
+            <th>Doktor Ad</th>
+            <th>İçerik</th>
+            <th>Tarih</th>
+            <th>Görsel</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            List<prolab_THEEND.Models.Rapor> raporList = Session["TempList"] as List<prolab_THEEND.Models.Rapor>;
+            foreach (var rapor in raporList)
+            {
+                using (Html.BeginForm())
+                {
+                    <tr>
+                        <td>@rapor.RaporID</td>
+                        <td>@rapor.Hasta.Ad</td>
+                        <td>@rapor.Doktor.Ad</td>
+                        <td>@rapor.İçerik</td>
+                        <td>
+                            @rapor.Tarih
+                        </td>
+                        <td><a href="@rapor.URL" id="">GORSEL</a></td>
+
+                        <td>
+                            <div style="margin-top: 5px;">
+                                <!-- Adding margin for spacing -->
+                                @Html.Hidden("LabId", rapor.RaporID)
+                                <button type="submit" class="btn btn-warning">Güncelle</button>
+                                <button class="btn btn-primary btnIndir" data-url="@rapor.URL">Dosyayı İndir</button>
+
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+@if (ViewBag.ToplamHastaSayisi > 10)
+{
+    <div style="margin-top: 10px;">
+        Sayfalar:
+        @for (int i = 0, k = i + 1; i <= Math.Floor((decimal)ViewBag.ToplamHastaSayisi / 10); i++)
+        {
+            <a href="@Url.Action("LabSonuc", "YöneticiPanel", new { sayfaNumarasi = i })">@i </a>
+        }
+    </div>
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.btnIndir').click(function (e) {
+            e.preventDefault();
+            var url = $(this).data('url');
+
+            $.ajax({
+                url: '@Url.Action("DosyaIndir", "YöneticiPanel")',
+                type: 'POST',
+                data: { url: url },
+                success: function (result) {
+                    alert('Dosya başarılı bir şekilde indirildi');
+                },
+                error: function () {
+                    alert('Dosya indirme sırasında bir hata oluştu');
+                }
+            });
+        });
+    });
+</script>
+

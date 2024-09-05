@@ -1,0 +1,76 @@
+﻿@using prolab_THEEND.Models
+@{
+    ViewBag.Title = "RandevuPanel";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hastane Randevu Sitesi</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* İsteğe bağlı özelleştirmeler */
+        body {
+            padding-top: 50px; /* Navbar'ın üst kısmını ayarla */
+        }
+
+        .randevu-listesi {
+            list-style-type: none; /* Liste stilini kaldır */
+            padding-left: 0; /* Liste içeriğinin sol boşluğunu kaldır */
+        }
+
+            .randevu-listesi li {
+                margin-bottom: 10px; /* Liste öğeleri arasına boşluk bırak */
+            }
+
+        .randevu-iptal-btn {
+            float: right; /* Randevu iptal butonunu sağa yasla */
+        }
+    </style>
+</head>
+<body>
+
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    @Html.ActionLink("Randevu Olustur", "RandevuOlustur", "HastaPanel", new { id = 123 }, new { @class = "btn btn-primary" })
+
+
+    <div class="container mt-5">
+        <h2>Randevu Paneli</h2>
+        <ul class="randevu-listesi">
+            @{
+                CombinedModels hasta = Session["HastaLogin"] as CombinedModels;
+                for (int i = 0; i < hasta.Hasta.Randevular.Count; i++)
+                {
+                    using (Html.BeginForm())
+                    {
+                        <li>
+                            <strong>Randevu Vakti:</strong> @hasta.Hasta.Randevular[i].RandevuTarih 
+                            <strong>Doktor :</strong> @hasta.Hasta.Randevular[i].Doktor.Ad
+
+                            <input type="hidden" name="randevuId" value="@hasta.Hasta.Randevular[i].RandevuId" />
+                            <button class="btn btn-danger randevu-iptal-btn">Randevu İptal</button>
+                        </li>
+
+                        <br />
+                        <br />
+                    }
+                }
+            }
+
+
+        </ul>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+

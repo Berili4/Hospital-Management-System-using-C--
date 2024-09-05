@@ -1,0 +1,67 @@
+﻿@model List<prolab_THEEND.Models.Hasta>
+@{
+    ViewBag.Title = "HastaListele";
+}
+<br />
+<h2>Hasta Listesi</h2>
+
+<style>
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    li {
+        border-bottom: 1px solid #ddd;
+        padding: 10px;
+    }
+
+    strong {
+        font-size: 16px;
+    }
+
+    button {
+        background-color: #ffc107;
+        border: none;
+        color: white;
+        padding: 8px 12px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+</style>
+
+<ul>
+    @{
+        List<prolab_THEEND.Models.Hasta> hastaList = Session["TempList"] as List<prolab_THEEND.Models.Hasta>;
+
+        for (int i = 0; i < hastaList.Count; i++)
+        {
+            using (Html.BeginForm())
+            {
+                <li>
+                    <strong>@hastaList[i].Ad @hastaList[i].SoyAd</strong>
+                    <div style="margin-top: 5px;">
+                        <!-- Adding margin for spacing -->
+                        @Html.Hidden("HastaTc", hastaList[i].TcKimlikNo)
+                        <button type="submit" class="btn btn-warning">Güncelle</button>
+                    </div>
+                </li>
+            }
+        }
+    }
+</ul>
+@if (ViewBag.ToplamHastaSayisi > 10)
+{
+    <div style="margin-top: 10px;">
+        Sayfalar:
+        @for (int i = 0 , k = i + 1; i <= Math.Floor((decimal)ViewBag.ToplamHastaSayisi / 10); i++)
+        {
+            <a href="@Url.Action("HastaListele", "YöneticiPanel", new { sayfaNumarasi = i })">@i </a>
+        }
+    </div>
+}

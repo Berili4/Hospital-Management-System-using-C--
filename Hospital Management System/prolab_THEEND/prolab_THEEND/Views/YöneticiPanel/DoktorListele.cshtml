@@ -1,0 +1,67 @@
+﻿@{
+    ViewBag.Title = "DoktorListele";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<Br />
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+
+<h2>Doktor Listesi</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Ad</th>
+            <th>Soyad</th>
+            <th>Uzmanlık Alanı</th>
+            <th>Hastane</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            List<prolab_THEEND.Models.Doktor> doktorList = Session["TempList"] as List<prolab_THEEND.Models.Doktor>;
+            foreach (var doktor in doktorList)
+            {
+                using (Html.BeginForm())
+                {
+                    <tr>
+                        <td>@doktor.Ad</td>
+                        <td>@doktor.SoyAd</td>
+                        <td>@doktor.UzmanlıkAlanı</td>
+                        <td>@doktor.Hastane</td>
+                        <td>
+                            <div style="margin-top: 5px;">
+                                <!-- Adding margin for spacing -->
+                                @Html.Hidden("DoktorId", doktor.DoktorID)
+                                <button type="submit" class="btn btn-warning">Güncelle</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+@if (ViewBag.ToplamHastaSayisi > 10)
+{
+    <div style="margin-top: 10px;">
+        Sayfalar:
+        @for (int i = 0,k = i + 1 ; i <= Math.Floor((decimal)ViewBag.ToplamHastaSayisi / 10); i++)
+        {
+            <a href="@Url.Action("DoktorListele", "YöneticiPanel", new { sayfaNumarasi = i })">@i</a>
+        }
+    </div>
+}

@@ -1,0 +1,109 @@
+﻿@model prolab_THEEND.Models.CombinedModels
+@{
+    ViewBag.Title = "DoktorSil";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<Br />
+<h2>Doktor Sil</h2>
+@using (Html.BeginForm())
+{
+    <div class="form-container">
+
+        <div class="form-group">
+            @Html.TextBoxFor(x => x.Doktor.DoktorID, new { @class = "form-control", placeholder = "Doktor ID" })
+            @Html.ValidationMessageFor(m => m.Doktor.DoktorID, "", new { @class = "text-danger" })
+
+        </div>
+        <input type="submit" class="submit-button" value="Sil">
+
+    </div>
+}
+@{
+    string mesaj = TempData["GuncellemeMesaj"] as string;
+    string durum = TempData["GuncellemeMesaj_Durum"] as string;
+    string h2Class = "";
+    if (durum == "Onay")
+    {
+        h2Class = "text-primary";
+    }
+    else if (durum == "Red")
+    {
+        h2Class = "text-danger";
+    }
+    <h2 class=@h2Class>@mesaj</h2>
+}
+<Br />
+
+<style>
+    .form-container {
+        width: 50%;
+        margin: auto;
+    }
+
+    .input-field {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .submit-button {
+        width: 100%;
+        background-color: #f44336;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        .submit-button:hover {
+            background-color: #d32f2f;
+        }
+
+    table {
+        width: 80%;
+        margin: auto;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+
+<Br />
+<h2>Doktor Listesi</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Ad</th>
+            <th>Soyad</th>
+            <th>Uzmanlık Alanı</th>
+            <th>Hastane</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            List<prolab_THEEND.Models.Doktor> doktorList = prolab_THEEND.Controllers.HomeController.doktorModifier.DoktorDatabase;
+            foreach (var doktor in doktorList)
+            {
+                <tr>
+                    <td>@doktor.Ad</td>
+                    <td>@doktor.SoyAd</td>
+                    <td>@doktor.UzmanlıkAlanı</td>
+                    <td>@doktor.Hastane</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

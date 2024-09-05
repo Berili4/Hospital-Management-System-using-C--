@@ -1,0 +1,89 @@
+﻿@using prolab_THEEND.Models
+@using prolab_THEEND.Controllers
+@model CombinedModels
+@{
+    ViewBag.Title = "Randevu Oluştur";
+}
+
+<h2>Randevu Oluştur</h2>
+
+@{
+    string secilenBolum = "Dahiliye";
+    int secilenDoktor = -1;
+    IEnumerable<Doktor> doktorListesi = HomeController.doktorModifier.DoktorDatabase;
+    List<Doktor> currentList = new List<Doktor>(doktorListesi);
+}
+
+@using (Html.BeginForm())
+{
+    <div class="container">
+        <div class="form-group">
+            @Html.Label("Bölüm Seçiniz:")
+            @Html.DropDownList("selectedBolum", new SelectList(prolab_THEEND.Commands.DoktorCommand.Hastalıklar), new { @class = "form-control mb-3", id = "Bolum" })
+
+            @Html.Label("Doktor Seçiniz:")
+            @Html.DropDownList("selectedDoktor", new SelectList(currentList, "DoktorId", "Ad"), new { @class = "form-control mb-3", id = "Doktor" })
+
+            @Html.Hidden("doktor", secilenDoktor)
+
+            @Html.Label("Randevu Tarihi Seçiniz:")
+            <input type="datetime-local" id="randevuTarihi" name="randevuTarihi" class="form-control mb-3" required>
+
+            <button id="submitButon" type="submit" class="btn btn-primary">Randevu Oluştur</button>
+        </div>
+    </div>
+    {
+        string mesaj = TempData["GuncellemeMesaj"] as string;
+        string durum = TempData["GuncellemeMesaj_Durum"] as string;
+        string h2Class = "";
+        if (durum == "Onay")
+        {
+            h2Class = "text-primary";
+        }
+        else if (durum == "Red")
+        {
+            h2Class = "text-danger";
+        }
+        <h2 class=@h2Class>@mesaj</h2>
+    }
+}
+
+<style>
+    #submitButon {
+        width: 10%;
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(function () {
+        $('#Bolum').change(function () {
+            var secilenBolum = $(this).val();
+
+            $.ajax({
+                url: '@Url.Action("RandevuOlustur_Sec", "HastaPanel")',
+                type: 'POST',
+                data: { selectedBolum: secilenBolum },
+                success: function (result) {
+                    $('#Doktor').empty();
+                    $.each(result, function (index, item) {
+                        var option = $('<option>');
+                        option.val(item.DoktorID);
+                        option.text(item.Ad);
+                        $('#Doktor').append(option);
+                    });
+                    var secilenDoktor = $('#Doktor').val();
+                    $('input[name="doktor"]').val(secilenDoktor);
+                },
+                error: function () {
+                    console.log('AJAX isteği başarısız oldu');
+                }
+            });
+        });
+
+        $('#Doktor').change(function () {
+            var secilenDoktor = $(this).val();
+            $('input[name="doktor"]').val(secilenDoktor);
+        });
+    });
+</script>

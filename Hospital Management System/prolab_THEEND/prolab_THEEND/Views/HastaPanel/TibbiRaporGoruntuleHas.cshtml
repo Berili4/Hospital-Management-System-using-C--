@@ -1,0 +1,83 @@
+﻿@model prolab_THEEND.Models.CombinedModels
+@{
+    ViewBag.Title = "TibbiRaporGoruntuleHas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Hasta Tibbi Rapor Goruntule </h2>
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+<h2>LabSonuc</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Rapor Id</th>
+            <th>İçerik</th>
+            <th>Doktor</th>
+            <th>Tarih</th>
+            <th>Görsel</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int HastaId = (Session["HastaLogin"] as prolab_THEEND.Models.CombinedModels).Hasta.HastaId;
+
+            List<prolab_THEEND.Models.Rapor> raporList = prolab_THEEND.Controllers.HomeController.raporModifier.FindRaporHastaId(HastaId);
+
+            foreach (var rapor in raporList)
+            {
+                using (Html.BeginForm())
+                {
+                    <tr>
+                        <td>@rapor.RaporID</td>
+                        <td>@rapor.İçerik</td>
+                        <td>@rapor.Doktor.Ad</td>
+                        <td>
+                            @rapor.Tarih
+                        </td>
+                        <td><a href="@rapor.URL">GORSEL</a></td>
+                        <td>
+                            <button class="btn btn-primary btnIndir" data-url="@rapor.URL">Dosyayı İndir</button>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.btnIndir').click(function (e) {
+            e.preventDefault();
+            var url = $(this).data('url');
+
+            $.ajax({
+                url: '@Url.Action("DosyaIndir", "HastaPanel")',
+                type: 'POST',
+                data: { url: url },
+                success: function (result) {
+                    alert('Dosya başarılı bir şekilde indirildi');
+                },
+                error: function () {
+                    alert('Dosya indirme sırasında bir hata oluştu');
+                }
+            });
+        });
+    });
+</script>

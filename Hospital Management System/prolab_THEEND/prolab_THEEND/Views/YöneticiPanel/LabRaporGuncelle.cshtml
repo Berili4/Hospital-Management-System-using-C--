@@ -1,0 +1,68 @@
+﻿@model prolab_THEEND.Models.CombinedModels
+@using prolab_THEEND.Models
+@{
+    ViewBag.Title = "LabRaporGuncelle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    CombinedModels models = Session["YöneticiLogin"] as CombinedModels;
+    Rapor rapor = prolab_THEEND.Controllers.HomeController.raporModifier.FindRapor(Convert.ToInt32(Session["LabSonucId"]));
+
+    foreach (Rapor findRapor in prolab_THEEND.Controllers.HomeController.raporModifier.raporDatabase)
+    {
+        if (findRapor.RaporID == rapor.RaporID)
+        {
+            rapor = findRapor;
+        }
+    }
+
+}
+<h2>LabRaporGuncelle</h2>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <br />
+            <h2>Hasta Güncelle</h2>
+            @using (Html.BeginForm("LabRaporGuncelle", "YöneticiPanel", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.HiddenFor(x => x.Rapor.RaporID, new { Value = $"{rapor.RaporID}" })
+                <div class="form-group">
+                    <strong>Hasta Bilgileri</strong>
+                    @Html.TextBoxFor(x => x.Rapor.Hasta.Ad, new { @class = "form-control", @readonly = "readonly", Value = $"{rapor.Hasta.Ad}" })
+                    @Html.TextBoxFor(x => x.Rapor.Hasta.SoyAd, new { @class = "form-control", @readonly = "readonly", Value = $"{rapor.Hasta.SoyAd}" })
+                </div>
+
+                <div class="form-group">
+                    <strong>Doktor Bilgileri</strong>
+                    @Html.TextBoxFor(x => x.Rapor.Doktor.Ad, new { @class = "form-control", @readonly = "readonly", Value = $"{rapor.Doktor.Ad}" })
+                    @Html.TextBoxFor(x => x.Rapor.Doktor.SoyAd, new { @class = "form-control", @readonly = "readonly", Value = $"{rapor.Doktor.SoyAd}" })
+                </div>
+                <div class="form-group">
+                    <strong>İçerik</strong>
+                    @Html.TextBoxFor(x => x.Rapor.İçerik, new { @class = "form-control", Value = $"{rapor.İçerik}" })
+                    <div class="form-group">
+                        <input type="file" name="fileUpload" id="fileUpload" accept=".jpg, .png" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="datetime-local" id="randevuTarihi" readonly="readonly" name="RandevuTarih" value="@rapor.Tarih.ToString("yyyy-MM-ddTHH:mm")" class="form-contol mb-3" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+            }
+            @{
+                string mesaj = TempData["GuncellemeMesaj"] as string;
+                string durum = TempData["GuncellemeMesaj_Durum"] as string;
+                string h2Class = "";
+                if (durum == "Onay")
+                {
+                    h2Class = "text-primary";
+                }
+                else if (durum == "Red")
+                {
+                    h2Class = "text-danger";
+                }
+                <h2 class=@h2Class>@mesaj</h2>
+            }
+        </div>
+    </div>
+</div>
